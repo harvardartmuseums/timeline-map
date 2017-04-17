@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Harvard Art Museums</title>
+<style>
+body, html {
+	cursor: none;
+	background-color: #191A1A;
+	font-family: Dosis;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	text-align: center;
+
+	-webkit-touch-callout: none; 
+	-webkit-user-select: none;
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+	user-select: none; 
+
+}
+
+#map {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.mapKey {
+	font-family: Dosis;
+	text-align: left;
+	color: #AAAAAA;
+	font-weight: normal;
+}
+
+.tooltip, .leaflet-popup-content {
+	text-align: center;
+	font-family: Dosis;
+}
+
+.tooltip image {
+	max-width: 100%;
+	max-height: 30vh;
+	height: auto;
+	width: auto;
+	cursor: none;
+	
+}
+
+.dayContainer {
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+.dayContainer .leaflet-marker-icon.leaflet-interactive {
+	pointer-events: none;
+	cursor: none;	
+}
+
+.dayContainer.show {
+	opacity: 1;
+	transition: none;
+}
+
+.dayContainer.show .leaflet-marker-icon.leaflet-interactive {
+	pointer-events: auto;
+	cursor: none;	
+}
+
+.mapDot {
+	border-radius: 50%;
+}
+
+.red {
+	box-shadow: 0px 0px .5vw .5vw rgba(255, 100, 100, .1);
+	background-color: rgba(255, 100, 100, .5);
+}
+
+.orange {
+	box-shadow: 0px 0px .5vw .5vw rgba(255, 185, 100, .1);
+	background-color: rgba(255, 185, 100, .5);
+}
+
+.yellow {
+	box-shadow: 0px 0px .5vw .5vw rgba(255, 255, 100, .1);
+	background-color: rgba(255, 255, 100, .5);
+}
+
+.green {
+	box-shadow: 0px 0px .5vw .5vw rgba(100, 255, 100, .1);
+	background-color: rgba(100, 255, 100, .5);
+}
+
+.aqua {
+	box-shadow: 0px 0px .5vw .5vw rgba(100, 255, 255, .1);
+	background-color: rgba(100, 255, 255, .5);
+}
+
+.blue {
+	box-shadow: 0px 0px .5vw .5vw rgba(100, 100, 255, .1);
+	background-color: rgba(100, 100, 255, .5);
+}
+
+.purple {
+	box-shadow: 0px 0px .5vw .5vw rgba(175, 100, 255, .1);
+	background-color: rgba(175, 100, 255, .5);
+}
+
+.pink {
+	box-shadow: 0px 0px .5vw .5vw rgba(255, 100, 200, .1);
+	background-color: rgba(255, 100, 200, .5);
+}
+
+.white {
+	box-shadow: 0px 0px .5vw .5vw rgba(255, 255, 255, .1);
+	background-color: rgba(255, 255, 255, .5);
+}
+
+#date {
+	position: absolute;
+	top: .5vw;
+	left: .5vw;
+	color: #333333;
+	background-color: #FFFFFF;
+	border-radius: .375vw;
+	padding: .25vw;
+	z-index: 2000;
+	opacity: 0;
+}
+
+.caption {
+	position: absolute;
+	bottom: 1.75vw;
+	left: 1.5vw;
+	width: 30%;
+	color: #FFFFFF;
+	font-size: 75%;
+	z-index: 2000;
+	overflow: hidden;
+	text-align: left;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 2s;
+}
+
+.caption span {
+	display: block;
+}
+
+.caption span:hover {
+	font-weight: 700;
+}
+
+.caption.show {
+	pointer-events: auto;
+	opacity: 1;
+	transition: none;
+}
+
+#cursor {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	transform-origin: 0 0;
+	transform: translate(0, 0);
+	z-index: 10000;
+}
+
+#loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: #191A1A;
+	color: #FFFFFF;
+	font-size: 500%;
+	z-index: 2001;
+}
+
+#loading div {
+	position: relative;
+}
+
+#loadingbar {
+	position: relative;
+	display: inline-block;
+	text-align: left;
+	width: 30vw;
+	height: 1vw;
+	background-color: #343332;
+}
+
+#loadingbar span {
+	box-sizing: border-box;
+	position: absolute;
+	display: inline-block;
+	top: 0px;
+	left: 0px;
+	width: 0%;
+	height: 100%;
+	transition: width .1s;
+	background-color: #191A1A;
+	border: .1vw solid #343332;
+}
+	
+#timeline {
+	-webkit-appearance: none;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	height: .5vw;
+	width: 100vw;
+	background-color: #343332;
+	z-index: 1500;
+}
+#timeline:focus {
+	outline: none;
+}
+#timeline::-webkit-slider-thumb {
+	height: .5vw;
+	width: .5vw;
+	background-color: #FFFFFF;
+	-webkit-appearance: none;
+}
+#timeline::-moz-range-track {
+	background-color: transparent;
+	border: 0px;
+}
+#timeline::-moz-range-thumb {
+	height: .5vw;
+	width: .5vw;
+	border: 0px;
+	border-radius: 0px;
+	background-color: #FFFFFF;
+}
+#timeline::-ms-track, #timeline::-ms-fill-lower, #timeline:focus::-ms-fill-lower {
+	box-sizing: border-box;
+	border: 0px;
+	background-color: transparent;
+	color: transparent;
+}
+#timeline::-ms-thumb {
+	width: .5vw;
+	height: .5vw;
+	border: 1px solid #FFFFFF;
+	background-color: #FFFFFF;
+}
+#timeline::-ms-tooltip {
+	display: none;
+}
+.timelineMarker {
+	position: absolute;
+	bottom: .75vw;
+	transform: translate(-50%, 0);
+	color: #333333;
+	background-color: #FFFFFF;
+	border-radius: .375vw;
+	padding: .25vw;
+	margin: 0px;
+	z-index: 1750;
+	font-size: 50%;
+	opacity: 1;
+	transition: opacity 1s;
+}
+.timelineMarker::after {
+	content: "";
+	position: absolute;
+	top: calc(100% - 1px);
+	left: 50%;
+	border-width: .25vw;
+	border-style: solid;
+	border-color: #FFFFFF transparent transparent transparent;
+	padding: 0px;
+	margin: 0px 0px 0px -.25vw;
+	z-index: 1750;
+}
+</style>
+<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet"> 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+</head>
+<body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+
+<input id="timeline" type="range" onchange="setDate()"></input>
+
+<div id="loading"><div><span id="loadingbar"><span></span></span></div></div>
+<div id="map"></div>
+<div id="caption"></div>
+<div id="date"></div>
+<img src="cursor.png" id="cursor" />
+
+
+<script>
+"use strict"; 
+
+var socket = io('/screens-namespace');
+
+var map;
+var currentMap;
+var key;
+
+var m = ["Jan", "Feb", "Mar", "Apr", "May", "June", 
+	"July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+var mFull = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+var dFull = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+var points = [];
+var timeline = {};
+var currDate;
+var currPoints = [];
+var toLoad = 1;
+var loaded = 0;
+var startDate;
+var endDate;
+var mapDot = {};
+var unknown = {};
+var timer;
+var restart;
+var nextDay = 100;
+var colorOptions = ["red", "orange", "yellow", "green", "aqua", "blue", "purple", "pink"];
+var colors = {"Sculpture": "red", "Paintings": "yellow", "Drawings": "green", "Prints": "aqua", "Photographs": "purple", "Other": "white"};
+
+var url = "http://api.harvardartmuseums.org/object?apikey=f0ebae50-8589-11e6-8681-638bad7e2ec3&size=100&gallery=any&fields=id,gallery,places,title,classification,people,culture,dated,primaryimageurl";
+
+setup();
+
+function clearData() {
+	$("#loading").css("display", "flex");
+	$("#cursor").css("display", "none");
+
+	clearInterval(timer);
+	clearTimeout(restart);
+
+	timeline = {};
+	points = [];
+	toLoad = 1;
+	loaded = 0;
+
+	$(".caption").remove();
+	currentMap.remove();
+}
+
+function setup() {
+	map = L.map('map', {
+		attributionControl: false, 
+		zoomControl: false,
+		boxZoom: false,
+		doubleClickZoom: false,
+		dragging: false,
+		keyboard: false,
+		scrollWheelZoom: false,
+		zoomSnap: .000001,
+	}).setView([0, 0], 1)
+
+	currentMap = L.layerGroup().addTo(map);
+	key = L.layerGroup().addTo(map);
+
+	resize();
+
+	L.tileLayer('https://api.mapbox.com/styles/v1/glevyhas/cj0jrdqc2007s2sulnbam9wn9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2xldnloYXMiLCJhIjoiY2l6aW9xbG4zMDFmbjJxb2QxM2RzeGZ0dCJ9.9AcW-nQfq-vpFv_F3ptkGg').addTo(map);
+
+	L.control.attribution({position: 'topright', prefix: false}).addAttribution('Leaflet | OpenStreetMap | Mapbox').addTo(map);
+
+	window.addEventListener("resize", resize);
+
+	getNewData();
+
+	setInterval(getNewData, 24*60*60*1000);
+
+	socket.on('cursor', function(x, y) {
+		$("#cursor").css("transform", "translate(" + x + "%, " + y + "%)");
+	};
+
+	$(document).keydown(function(e) {
+		if (e.which == 37) {
+			e.preventDefault();
+
+			document.getElementById("timeline").value--;
+			setDate();
+
+			pauseData();
+
+			return false;
+		} else if (e.which == 39) {
+			e.preventDefault();
+
+			document.getElementById("timeline").value++;
+			setDate();
+
+			pauseData();
+
+			return false;
+		}
+	});
+}
+
+function addKey() {
+	key.clearLayers();
+	var keys = Object.keys(colors);
+	var c;
+	var marker;
+	var pixelOrigin = map.getPixelOrigin();
+	var x = pixelOrigin.x;
+	var y = pixelOrigin.y;
+	for (var i = 0; i < keys.length; i++) {
+		c = colors[keys[i]];
+		mapDot[c] = L.divIcon({className: ('mapDot ' + c), iconSize: [3, 3]});
+		unknown[c] = L.divIcon({className: ('unknown'), html: ""});
+
+		marker = L.marker(map.wrapLatLng(map.layerPointToLatLng([$(window).width()*.925, $(window).height()*(.36 + .31*(i/keys.length))])), {interactive: false, icon: mapDot[c]});
+		marker.addTo(key);
+		marker = L.marker(map.wrapLatLng(map.layerPointToLatLng([$(window).width()*.925, $(window).height()*(.36 + .31*(i/keys.length))])), {interactive: false, icon: mapDot[c]});
+		marker.addTo(key);
+		marker = L.marker(map.wrapLatLng(map.layerPointToLatLng([$(window).width()*.925, $(window).height()*(.36 + .31*(i/keys.length))])), {interactive: false, icon: mapDot[c]});
+		marker.addTo(key);
+		marker = L.marker(map.wrapLatLng(map.layerPointToLatLng([$(window).width()*.93, $(window).height()*(.36 + .31*(i/keys.length))])), {interactive: false, icon: L.divIcon({className: 'mapKey', iconSize: [$(window).width()/10, $(window).height()/50], iconAnchor: [0, $(window).height()/100], html: keys[i]})});
+		marker.addTo(key);
+	}
+}
+
+function resize() {
+	var ratio = $(window).width()/$(window).height();	
+	if (ratio > (16/9)) {
+		$("#map").css({
+			"width": $(window).height()*16/9 + "px", 
+			"height": $(window).height() + "px",
+			"top": "0px",
+			"left": ($(window).width() - $(window).height()*16/9)/2 + "px"
+		});
+		var unit = $(window).height()/9;
+		$("#unknown").css({
+			"transform": "scale(" + unit/1000 + ", " + unit/1000 + ")",
+			"bottom": unit*4 + "px",
+			"left": unit*5 + (($(window).width() - $(window).height()*16/9)/2) + "px"
+		});
+	} else if (ratio < (16/9)) {
+		$("#map").css({
+			"width": $(window).width() + "px", 
+			"height": $(window).width()*9/16 + "px",
+			"top": ($(window).height() - $(window).width()*9/16)/2 + "px",
+			"left": "0px"
+		});
+		var unit = $(window).width()/16;
+		$("#unknown").css({
+			"transform": "scale(" + unit/1000 + ", " + unit/1000 + ")",
+			"bottom": unit*4 + (($(window).height() - $(window).width()*9/16)/2) + "px",
+			"left": unit*5 + "px"
+		});
+	} else {
+		$("#map").css({
+			"width": $(window).width() + "px", 
+			"height": $(window).height() + "px",
+			"top": "0px",
+			"left": "0px"
+		});
+		var unit = $(window).width()/16;
+		$("#unknown").css({
+			"transform": "scale(" + unit/1000 + ", " + unit/1000 + ")",
+			"bottom": unit*4 + "px",
+			"left": unit*5 + "px"
+		});
+	}
+	map.fitBounds([[78.5, 12], [-57.5, 12]]);
+	setTimeout(addKey, 1000);
+}
+
+function getNewData() {
+	clearData();
+
+	var xmlrequest = new XMLHttpRequest();
+	
+	xmlrequest.onreadystatechange = function() {
+		if (this.readyState == 4) {
+			if (this.status == 200) {
+				var data = JSON.parse(this.responseText);
+				if (data.info.page < data.info.pages) {
+					toLoad = data.info.totalrecords;
+					setData(JSON.parse(this.responseText), false);
+					getData("&page=" + (data.info.page + 1));
+				} else {
+					setData(JSON.parse(this.responseText), true);
+				}
+			} 
+		}
+	};
+			
+	xmlrequest.open("GET", url + "&aggregation={\"by_classification\":{\"terms\":{\"field\":\"classification.exact\",\"size\":0}}}", true);
+	xmlrequest.send();
+}
+
+function getData(page) {
+	var xmlrequest = new XMLHttpRequest();
+	
+	xmlrequest.onreadystatechange = function() {
+		if (this.readyState == 4) {
+			if (this.status == 200) {
+				var data = JSON.parse(this.responseText);
+				var p = data.info.page;
+				if (p < data.info.pages) {
+					setData(JSON.parse(this.responseText), false);
+					getData("&page=" + (p + 1));
+				} else {
+					setData(JSON.parse(this.responseText), true);
+				}
+			} 
+		}
+	};
+			
+	xmlrequest.open("GET", url + page, true);
+	xmlrequest.send();
+}
+
+function setData(data, start) {
+	if (data.aggregations != undefined) {
+		colors = {};
+		for (var i = 0; i < colorOptions.length; i++) {
+			if (data.aggregations.by_classification.buckets[i] != undefined) {
+				colors[data.aggregations.by_classification.buckets[i].key] = colorOptions[i];
+			} else {
+				break;
+			}
+		}
+		colors["Other"] = "white";
+		addKey();
+	}
+	for (var i = 0; i < data.records.length; i++) {
+		loaded++;
+		$("#loadingbar span").css("width", loaded/toLoad*100 + "%");
+		if (timeline[data.records[i].gallery.begindate] == undefined) {
+			timeline[data.records[i].gallery.begindate] = [];
+		}
+		timeline[data.records[i].gallery.begindate].push({
+			id: data.records[i].id, 
+			caption: data.records[i].gallery.name, 
+			tooltip: text("<em>" + data.records[i].title, true) + "</em><br />Click for more information",
+			popup: (image(data.records[i].primaryimageurl) + "<br /><em>" + text(data.records[i].title, true) + "</em><br />" + text(getArtist(data.records[i])) + text(data.records[i].dated) + text(data.records[i].culture, true) + "<br />" + text(data.records[i].gallery.theme, true)).trim(),
+			date: data.records[i].gallery.begindate,
+			color: getColor(data.records[i].classification),
+			place: getPlace(data.records[i])
+		});
+	}
+	if (start) {
+		loaded = 0;
+		toLoad = 0;
+		$("#loadingbar span").css("width", "0%");
+		startTimeline();
+	}
+}
+
+function getArtist(record) {
+	if (record.people == null) {
+		return null;
+	}
+	for (var i = 0; i < record.people.length; i++) {
+		if (record.people[i].role == "Artist") {
+			return record.people[i].displayname;
+		}
+	}
+	return null;
+}
+
+function text(data, nocomma) {
+	return ((data != null)? (data + (nocomma? "" : ", ")) : "");
+}
+
+function image(data) {
+	return ((data != null)? "<img src=\"" + data + "\" alt=\"photograph of object\" draggable=\"false\" />" : "");
+}
+
+function getColor(data) {
+	var keys = Object.keys(colors);
+	for (var i = 0; i < keys.length; i++) {
+		if (data == keys[i]) {
+			return colors[keys[i]];
+		}
+	}
+	return colors["Other"];
+}
+
+function getPlace(data) {
+	var fallBack = {name: undefined, geo: undefined};
+	if (data.places != undefined) {
+		var place;
+		for (var i = 0; i < data.places.length; i++) {
+			if (data.places[i].type == "Creation Place") {
+				place = {
+					name: data.places[i].displayname,
+					geo: undefined
+				};
+				getGeo(place, data.places[i].placeid);
+			} else if (data.places[i].type == "Find Spot") {
+				fallBack = {
+					name: data.places[i].displayname,
+					geo: undefined
+				};
+				getGeo(fallBack, data.places[i].placeid);
+			}
+		}
+		return ((place != undefined)? place : fallBack);
+	} else {
+		return fallBack;
+	}
+}
+
+function getGeo(object, id) {
+	var placeURL = "http://api.harvardartmuseums.org/place/" + id + "?apikey=f0ebae50-8589-11e6-8681-638bad7e2ec3";
+	var xmlrequest = new XMLHttpRequest();
+	
+	xmlrequest.onreadystatechange = function() {
+		if (this.readyState == 4) {
+			if (this.status == 200) {
+				object.geo = JSON.parse(this.responseText).geo;
+			} 
+		}
+	};
+			
+	xmlrequest.open("GET", placeURL, true);
+	xmlrequest.send();
+}
+
+function startTimeline() {
+	$("#cursor").css("display", "block");
+	$("#loading").css("display", "none");
+	points = Object.keys(timeline).sort();
+	startDate = new Date(points[0] + 'T12:00:00');
+	endDate = new Date(points[points.length - 1] + 'T12:00:00');
+	currDate = startDate;
+
+	var point;
+	var caption;
+	var captionOffset = 0;
+	for (var i = 0; i < points.length; i++) {
+		map.createPane(points[i]);
+		$(map.getPane(points[i])).addClass("dayContainer");
+		caption = {};
+		$("body").append("<div id=\"c" + points[i] + "\" class=\"caption\"></div>");
+		for (var j = 0; j < timeline[points[i]].length; j++) {
+			point = timeline[points[i]][j];
+			if (caption[point.caption] == undefined) {
+				caption[point.caption] = L.layerGroup().addTo(map);
+				$("<span>" + point.caption + "</span>").appendTo($("#c" + points[i])).hover(layerActive.bind(caption[point.caption]), layerInactive.bind(caption[point.caption]));
+			}
+			caption[point.caption].addLayer(addPoint(point, points[i]));
+		}
+
+		$("#c" + points[i]).css("transform", "translate(0, -" + captionOffset + "px)");
+		captionOffset += $("#c" + points[i]).height() + $(window).width()/100;
+		if (captionOffset > ($(window).height()*.33 - $(window).width()*.03)) {
+			captionOffset = 0;
+		}
+	}
+
+	var tempDate = new Date(startDate.valueOf());
+	while ((tempDate.getFullYear() < endDate.getFullYear()) || (tempDate.getMonth() <= endDate.getMonth()))	{
+		$("body").append("<div class=\"timelineMarker\" id=\"t" + tempDate.getMonth() + tempDate.getFullYear() + "\" style=\"left: " + ((tempDate.valueOf() - startDate.valueOf())/(endDate.valueOf() - startDate.valueOf())*100) + "%\">" + m[tempDate.getMonth()] + " " + tempDate.getFullYear() + "</div>");
+		tempDate.setMonth(tempDate.getMonth() + 1);
+	}
+	
+
+	$("#timeline").attr("min", 0);
+	$("#timeline").attr("max", Math.round((endDate.valueOf() - startDate.valueOf())/(24*60*60*1000)));
+	$("#timeline").attr("step", "1");
+
+	$("#timeline").val(0);
+	$("#timeline").on("mousedown", pauseData);
+
+	playData();
+}
+
+function layerActive() {
+	this.invoke("setOpacity", 1);
+}
+
+function layerInactive() {
+	this.invoke("setOpacity", .5);
+}
+
+function setDate() {
+	currDate = new Date(startDate.valueOf() + $("#timeline").val()*24*60*60*1000);
+	refreshData();
+}
+
+function playData() {
+	clearTimeout(restart);
+	clearInterval(timer);
+	timer = setInterval(refreshData, nextDay);
+
+	$("#date").css("opacity", 0);
+}
+
+function pauseData() {
+	clearInterval(timer);
+	clearTimeout(restart);
+	restart = setTimeout(playData, 180000);
+
+	$("#date").css("opacity", 1);
+}
+
+function refreshData() {
+	if (currDate > endDate) {
+		currDate = startDate;
+		return;
+	}
+
+	$("#timeline").val(Math.round((currDate.valueOf() - startDate.valueOf())/(24*60*60*1000)));
+
+	$(".timelineMarker").css("opacity", "0");
+	$("#t" + currDate.getMonth() + currDate.getFullYear()).css("opacity", "1");
+
+	$(".show").removeClass("show");
+	map.closePopup();
+
+	$("#date").html(dFull[currDate.getDay()] + ", " + mFull[currDate.getMonth()] + " " + currDate.getDate() + ", " + currDate.getFullYear());
+
+	$(map.getPane(textDate(currDate))).addClass("show");
+	$("#c" + textDate(currDate)).addClass("show");
+
+	currDate = new Date(currDate.valueOf());
+	currDate.setDate(currDate.getDate() + 1);
+}
+
+function textDate(date) {
+	return date.toJSON().slice(0, 10);
+}
+
+function addPoint(point, pane) {
+	var marker;
+	if (point.place.geo != undefined) {
+		marker = L.marker([point.place.geo.lat + 1 - (1*Math.random() + 1*Math.random()), point.place.geo.lon + 1 - (1*Math.random() + 1*Math.random())], {icon: mapDot[point.color], opacity: .5, pane: pane});
+	} else {
+		marker = L.marker([30 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10), -40 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10)], {icon: unknown[point.color], interactive: false, pane: pane});
+	}
+	
+	marker.bindTooltip((point.place.name + "<br />" + point.tooltip), {className: "tooltip"});
+	marker.bindPopup(point.popup, {className: "tooltip", autoPan: false, closeButton: false});
+	marker.addTo(currentMap);
+
+	return marker;
+}
+
+</script>
+</body>
+</html>

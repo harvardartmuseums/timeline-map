@@ -1,0 +1,24 @@
+{
+  "name": "timelineproject",
+  "version": "1.0.0",
+  "description": "A map of objects as they enter the collection",
+  "main": "index.js",
+  "engines": {
+    "node": "7.2.0"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "data",
+    "sonification",
+    "art"
+  ],
+  "author": "gavriella-levy-haskell",
+  "license": "ISC"
+}
