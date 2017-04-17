@@ -27,14 +27,10 @@ $(document).on("unload", function() {
 });
 
 document.addEventListener("touchmove", function(e) {
-	e.preventDefault();
-
-	var x = e.changedTouches[e.changedTouches.length].pageX/$(window).width()*100;
-	var y = e.changedTouches[e.changedTouches.length].pageY/$(window).height()*100;
+	var x = e.touches[0].pageX/$(window).width()*100;
+	var y = e.touches[0].pageY/$(window).height()*100;
 
 	socket.emit("cursor", x, y);
-
-	return false;
 }, false);
 
 socket.on('reject', function () {
