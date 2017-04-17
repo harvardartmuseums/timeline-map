@@ -384,7 +384,7 @@ function setup() {
 
 	socket.on('cursor', function(x, y) {
 		$("#cursor").css("transform", "translate(" + x + "%, " + y + "%)");
-	};
+	});
 
 	$(document).keydown(function(e) {
 		if (e.which == 37) {
