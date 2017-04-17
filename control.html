@@ -26,7 +26,7 @@ $(document).on("unload", function() {
 	socket.emit("close");
 });
 
-$(document).on("touchmove", function(e) {
+document.addEventListener("touchmove", function(e) {
 	e.preventDefault();
 
 	var x = e.changedTouches[e.changedTouches.length].pageX/$(window).width()*100;
@@ -35,7 +35,7 @@ $(document).on("touchmove", function(e) {
 	socket.emit("cursor", x, y);
 
 	return false;
-});
+}, false);
 
 socket.on('reject', function () {
 	alert("Another controller is already in use.");
