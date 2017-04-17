@@ -27,15 +27,7 @@ var projectorIO = io.of('/projectors-namespace');
 var control = false;
 
 projectorIO.on('connection', function(socket) {
-	if (control) {
-		projectorIO.to(socket.id).emit('reject');
-	} else {
-		control = true;
-		socket.on('cursor', function(x, y) {
-			screensIO.emit('cursor', x, y);
-		});
-		socket.on('close', function() {
-			control = false;
-		});
-	}
+	socket.on('cursor', function(x, y) {
+		screensIO.emit('cursor', x, y);
+	});
 });
