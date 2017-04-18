@@ -341,16 +341,14 @@ var url = "http://api.harvardartmuseums.org/object?apikey=f0ebae50-8589-11e6-868
 var currElement;
 socket.on('cursor', function(x, y) {
 	$("#cursor").css("transform", "translate(" + x + "vw, " + y + "vh)");
-	triggerMouseEvents(x, y);
+	triggerMouseEvents(x*$(window).width(), y*$(window).height());
 });
 function triggerMouseEvents(x, y) {
 	var element = document.elementFromPoint(x, y);
 	if (currElement == undefined) {
-		alert("First element");
 		currElement = element;
 		$(element).mouseenter();
 	} else if (currElement != element) {
-		alert("Element transition");
 		$(currElement).mouseleave();
 		$(element).mouseenter();
 		currElement = element;
