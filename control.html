@@ -33,12 +33,12 @@ $(document).on("unload", function() {
 document.addEventListener("touchmove", function(e) {
 	e.preventDefault();
 
-	var x = e.touches[0].pageX/$(window).width()*100;
-	var y = e.touches[0].pageY/$(window).height()*100;
+	var x = e.touches[0].pageX/$(window).width()*110 - 5;
+	var y = e.touches[0].pageY/$(window).height()*110 - 5;
 
 	socket.emit("cursor", x, y);
 }, false);
-
+/*
 socket.on('reject', function () {
 	alert("Another controller is already in use.");
 	$(document).off("unload");
@@ -54,7 +54,7 @@ socket.on('timeout', function () {
 socket.on('ping', function() {
 	socket.emit("confirm");
 });
-
+*/
 
 </script>
 </body>
