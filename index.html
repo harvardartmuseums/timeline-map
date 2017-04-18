@@ -390,20 +390,20 @@ function setup() {
 		triggerMouseEvents(x*$(window).width()/100, y*$(window).height()/100);
 	});
 	function triggerMouseEvents(x, y) {
+		var event;
 		var element = document.elementFromPoint(x, y);
 		if (currElement == undefined) {
 			currElement = element;
-			$(element).mouseover();
-			if (map != undefined) {
-				map.fire();
-			}
+			event = new MouseEvent("mouseover", {"clientX": x, "clientY": y});
+			element.dispatchEvent(event);
 		} else if (currElement != element) {
-			$(currElement).mouseout();
-			$(element).mouseover();
+			event = new MouseEvent("mouseout", {"clientX": x, "clientY": y, "relatedTarget": element});
+			currElement.dispatchEvent(event);
+
+			event = new MouseEvent("mouseover", {"clientX": x, "clientY": y, "relatedTarget": currElement});
+			element.dispatchEvent(event);
+
 			currElement = element;
-			if (map != undefined) {
-				map.fire();
-			}
 		}
 	}
 
