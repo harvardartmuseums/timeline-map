@@ -337,6 +337,26 @@ var colors = {"Sculpture": "red", "Paintings": "yellow", "Drawings": "green", "P
 
 var url = "http://api.harvardartmuseums.org/object?apikey=f0ebae50-8589-11e6-8681-638bad7e2ec3&size=100&gallery=any&fields=id,gallery,places,title,classification,people,culture,dated,primaryimageurl";
 
+
+var currElement;
+socket.on('cursor', function(x, y) {
+	$("#cursor").css("transform", "translate(" + x + "vw, " + y + "vh)");
+	triggerMouseEvents(x, y);
+});
+function triggerMouseEvents(x, y) {
+	var element = document.elementFromPoint(x, y);
+	if (currElement == undefined) {
+		currElement = element;
+		$(element).mouseenter();
+	} else if (currElement != element) {
+		$(currElement).mouseleave();
+		$(element).mouseenter();
+		currElement = element;
+	} else {
+		$(currElement).mousemove();
+	}
+}
+
 setup();
 
 function clearData() {
@@ -381,10 +401,6 @@ function setup() {
 	getNewData();
 
 	setInterval(getNewData, 24*60*60*1000);
-
-	socket.on('cursor', function(x, y) {
-		$("#cursor").css("transform", "translate(" + x + "vw, " + y + "vh)");
-	});
 
 	$(document).keydown(function(e) {
 		if (e.which == 37) {
