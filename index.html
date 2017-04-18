@@ -396,11 +396,14 @@ function setup() {
 			currElement = element;
 			event = new MouseEvent("mouseover", {"clientX": x, "clientY": y});
 			element.dispatchEvent(event);
+			map.fire("mouseover", {"layerPoint": map.mouseEventToLayerPoint(event)});
 		} else if (currElement != element) {
 			event = new MouseEvent("mouseout", {"clientX": x, "clientY": y, "relatedTarget": element});
+			map.fire("mouseout", {"layerPoint": map.mouseEventToLayerPoint(event)});
 			currElement.dispatchEvent(event);
 
 			event = new MouseEvent("mouseover", {"clientX": x, "clientY": y, "relatedTarget": currElement});
+			map.fire("mouseover", {"layerPoint": map.mouseEventToLayerPoint(event)});
 			element.dispatchEvent(event);
 
 			currElement = element;
