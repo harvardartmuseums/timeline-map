@@ -339,23 +339,6 @@ var colors = {"Sculpture": "red", "Paintings": "yellow", "Drawings": "green", "P
 var url = "http://api.harvardartmuseums.org/object?apikey=f0ebae50-8589-11e6-8681-638bad7e2ec3&size=100&gallery=any&fields=id,gallery,places,title,classification,people,culture,dated,primaryimageurl";
 
 
-var currElement;
-socket.on('cursor', function(x, y) {
-	$("#cursor").css("transform", "translate(" + x + "vw, " + y + "vh)");
-	triggerMouseEvents(x*$(window).width()/100, y*$(window).height()/100);
-});
-function triggerMouseEvents(x, y) {
-	var element = document.elementFromPoint(x, y);
-	if (currElement == undefined) {
-		currElement = element;
-		$(element).mouseover();
-	} else if (currElement != element) {
-		$(currElement).mouseout();
-		$(element).mouseover();
-		currElement = element;
-	}
-}
-
 setup();
 
 function clearData() {
@@ -400,6 +383,29 @@ function setup() {
 	getNewData();
 
 	setInterval(getNewData, 24*60*60*1000);
+
+	var currElement;
+	socket.on('cursor', function(x, y) {
+		$("#cursor").css("transform", "translate(" + x + "vw, " + y + "vh)");
+		triggerMouseEvents(x*$(window).width()/100, y*$(window).height()/100);
+	});
+	function triggerMouseEvents(x, y) {
+		var element = document.elementFromPoint(x, y);
+		if (currElement == undefined) {
+			currElement = element;
+			$(element).mouseover();
+			if (map != undefined) {
+				map.fire();
+			}
+		} else if (currElement != element) {
+			$(currElement).mouseout();
+			$(element).mouseover();
+			currElement = element;
+			if (map != undefined) {
+				map.fire();
+			}
+		}
+	}
 
 	$(document).keydown(function(e) {
 		if (e.which == 37) {
