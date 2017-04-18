@@ -341,7 +341,7 @@ var url = "http://api.harvardartmuseums.org/object?apikey=f0ebae50-8589-11e6-868
 var currElement;
 socket.on('cursor', function(x, y) {
 	$("#cursor").css("transform", "translate(" + x + "vw, " + y + "vh)");
-	triggerMouseEvents(x*$(window).width(), y*$(window).height());
+	triggerMouseEvents(x*$(window).width()/100, y*$(window).height()/100);
 });
 function triggerMouseEvents(x, y) {
 	var element = document.elementFromPoint(x, y);
