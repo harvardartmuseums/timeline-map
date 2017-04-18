@@ -23,7 +23,7 @@ body, html {
 <script>
 "use strict";
 
-var socket = io('/projectors-namespace');
+var socket = io('/control-namespace');
 
 $(document).on("unload", function() {
 	socket.emit("close");
@@ -36,10 +36,30 @@ document.addEventListener("touchmove", function(e) {
 	socket.emit("cursor", x, y);
 }, false);
 
+document.addEventListener("scrollstart", function(e) {
+	e.preventDefault();
+	return false;
+}, false);
+
+document.addEventListener("scrollend", function(e) {
+	e.preventDefault();
+	return false;
+}, false);
+
 socket.on('reject', function () {
 	alert("Another controller is already in use.");
 	$(document).off("unload");
 	$(document).off("touchmove");
+});
+
+socket.on('timeout', function () {
+	alert("This controller has taken too long in responding. Please reload the page to reconnect.");
+	$(document).off("unload");
+	$(document).off("touchmove");
+});
+
+socket.on('ping', function() {
+	socket.emit("confirm");
 });
 
 

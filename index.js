@@ -23,11 +23,38 @@ server.listen(PORT);
 
 
 var screensIO = io.of('/screens-namespace');
-var projectorIO = io.of('/projectors-namespace');
-var control = false;
+var controlIO = io.of('/control-namespace');
+var control = null;
+var confirmed = false;
 
-projectorIO.on('connection', function(socket) {
-	socket.on('cursor', function(x, y) {
-		screensIO.emit('cursor', x, y);
-	});
+setInterval(pingControl, 5*60*1000);
+
+controlIO.on('connection', function(socket) {
+	if (control != null) {
+		controlIO.to(socket.id).emit("reject");
+	} else {
+		confirmed = true;
+		control = socket.id;
+		socket.on('cursor', function(x, y) {
+			screensIO.emit('cursor', x, y);
+		});
+		socket.on('confirm', function() {
+			confirmed = true;
+		});
+		socket.on('close', function() {
+			control = null;
+		});
+	}
 });
+
+function pingControl() {
+	if (control != null) {
+		if (confirmed) {
+			confirmed = false;
+			controlIO.to(control).emit("ping");
+		} else {
+			controlIO.to(control).emit("timeout");
+			control = null;
+		}
+	}
+}
