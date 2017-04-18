@@ -346,9 +346,11 @@ socket.on('cursor', function(x, y) {
 function triggerMouseEvents(x, y) {
 	var element = document.elementFromPoint(x, y);
 	if (currElement == undefined) {
+		alert("First element");
 		currElement = element;
 		$(element).mouseenter();
 	} else if (currElement != element) {
+		alert("Element transition");
 		$(currElement).mouseleave();
 		$(element).mouseenter();
 		currElement = element;
