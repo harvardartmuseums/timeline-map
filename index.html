@@ -348,13 +348,11 @@ function triggerMouseEvents(x, y) {
 	var element = document.elementFromPoint(x, y);
 	if (currElement == undefined) {
 		currElement = element;
-		$(element).mouseenter();
+		$(element).mouseover();
 	} else if (currElement != element) {
-		$(currElement).mouseleave();
-		$(element).mouseenter();
+		$(currElement).mouseout();
+		$(element).mouseover();
 		currElement = element;
-	} else {
-		$(currElement).mousemove();
 	}
 }
 
