@@ -5,6 +5,7 @@
 <title>Harvard Art Museums</title>
 <style>
 body, html {
+	position: fixed;
 	cursor: none;
 	background-color: #000000;
 	width: 100%;
@@ -30,20 +31,12 @@ $(document).on("unload", function() {
 });
 
 document.addEventListener("touchmove", function(e) {
+	e.preventDefault();
+
 	var x = e.touches[0].pageX/$(window).width()*100;
 	var y = e.touches[0].pageY/$(window).height()*100;
 
 	socket.emit("cursor", x, y);
-}, false);
-
-document.addEventListener("scrollstart", function(e) {
-	e.preventDefault();
-	return false;
-}, false);
-
-document.addEventListener("scrollend", function(e) {
-	e.preventDefault();
-	return false;
 }, false);
 
 socket.on('reject', function () {
