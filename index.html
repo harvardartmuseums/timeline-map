@@ -768,8 +768,15 @@ function addPoint(point, pane) {
 		marker = L.marker([30 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10), -40 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10)], {icon: unknown[point.color], interactive: false, pane: pane});
 	}
 	
-	marker.bindTooltip((point.place.name + "<br />" + point.tooltip), {className: "tooltip"});
-	marker.bindPopup(point.popup, {className: "tooltip", autoPan: false, closeButton: false});
+	var tooltip = marker.bindTooltip((point.place.name + "<br />" + point.tooltip), {className: "tooltip"});
+	var popup = marker.bindPopup(point.popup, {className: "tooltip", autoPan: false, closeButton: false});
+
+	marker.on("mouseover", map.openTooltip.bind(null, tooltip));
+
+	marker.on("mouseout", map.closeTooltip.bind(null, tooltip));
+
+	marker.on("click", map.openPopup.bind(null, popup));
+	
 	marker.addTo(currentMap);
 
 	return marker;
