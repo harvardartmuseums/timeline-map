@@ -152,7 +152,7 @@ body, html {
 	display: block;
 }
 
-.caption span:hover {
+.bolded {
 	font-weight: 700;
 }
 
@@ -394,17 +394,11 @@ function setup() {
 		var element = document.elementFromPoint(x, y);
 		if (currElement == undefined) {
 			currElement = element;
-			event = new MouseEvent("mouseover", {"clientX": x, "clientY": y});
-			element.dispatchEvent(event);
-			map.fire("mouseover", {"layerPoint": map.mouseEventToLayerPoint(event)});
-		} else if (currElement != element) {
-			event = new MouseEvent("mouseout", {"clientX": x, "clientY": y, "relatedTarget": element});
-			map.fire("mouseout", {"layerPoint": map.mouseEventToLayerPoint(event)});
-			currElement.dispatchEvent(event);
+			$(element).mouseover();
 
-			event = new MouseEvent("mouseover", {"clientX": x, "clientY": y, "relatedTarget": currElement});
-			map.fire("mouseover", {"layerPoint": map.mouseEventToLayerPoint(event)});
-			element.dispatchEvent(event);
+		} else if (currElement != element) {
+			$(currElement).mouseout()
+			$(element).mouseover();
 
 			currElement = element;
 		}
@@ -677,7 +671,7 @@ function startTimeline() {
 			point = timeline[points[i]][j];
 			if (caption[point.caption] == undefined) {
 				caption[point.caption] = L.layerGroup().addTo(map);
-				$("<span>" + point.caption + "</span>").appendTo($("#c" + points[i])).hover(layerActive.bind(caption[point.caption]), layerInactive.bind(caption[point.caption]));
+				$("<span>" + point.caption + "</span>").appendTo($("#c" + points[i])).hover(layerActive.bind(this, caption[point.caption]), layerInactive.bind(this, caption[point.caption]));
 			}
 			caption[point.caption].addLayer(addPoint(point, points[i]));
 		}
@@ -706,12 +700,14 @@ function startTimeline() {
 	playData();
 }
 
-function layerActive() {
-	this.invoke("setOpacity", 1);
+function layerActive(captionLayer) {
+	$(this).addClass("bolded");
+	captionLayer.invoke("setOpacity", 1);
 }
 
-function layerInactive() {
-	this.invoke("setOpacity", .5);
+function layerInactive(captionLayer) {
+	$(this).removeClass("bolded");
+	captionLayer.invoke("setOpacity", .5);
 }
 
 function setDate() {
