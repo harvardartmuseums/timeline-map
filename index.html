@@ -313,6 +313,8 @@ var map;
 var currentMap;
 var key;
 
+var tooltips = {};
+
 var m = ["Jan", "Feb", "Mar", "Apr", "May", "June", 
 	"July", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -320,6 +322,8 @@ var mFull = ["January", "February", "March", "April", "May", "June", "July", "Au
 
 var dFull = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+var offsetX = 0;
+var offsetY = 0;
 var points = [];
 var timeline = {};
 var currDate;
@@ -355,6 +359,8 @@ function clearData() {
 
 	$(".caption").remove();
 	currentMap.remove();
+
+	tooltips = {};
 }
 
 function setup() {
@@ -368,6 +374,24 @@ function setup() {
 		scrollWheelZoom: false,
 		zoomSnap: .000001,
 	}).setView([0, 0], 1)
+
+	$(map.getContainer()).mousemove(function(e) {
+		var tooltip = tooltips[(e.clientX - offsetX) + " " + (e.clientY - offsetY)];
+		if (tooltip != undefined) {
+			map.closeTooltip();
+			map.openTooltip(tooltip[0]);
+		} else {
+			map.closeTooltip();
+		}
+	});
+	$(map.getContainer()).click(function(e) {
+		var tooltip = tooltips[(e.clientX - offsetX) + " " + (e.clientY - offsetY)];
+		if (tooltip != undefined) {
+			map.openPopup(tooltip[1]);
+		} else {
+			map.closePopup();
+		}
+	});
 
 	currentMap = L.layerGroup().addTo(map);
 	key = L.layerGroup().addTo(map);
@@ -454,44 +478,36 @@ function addKey() {
 function resize() {
 	var ratio = $(window).width()/$(window).height();	
 	if (ratio > (16/9)) {
+		offsetX = ($(window).width() - $(window).height()*16/9)/2;
+		offsetY = 0;
 		$("#map").css({
 			"width": $(window).height()*16/9 + "px", 
 			"height": $(window).height() + "px",
-			"top": "0px",
-			"left": ($(window).width() - $(window).height()*16/9)/2 + "px"
+			"top": offsetY + "px",
+			"left": offsetX + "px"
 		});
 		var unit = $(window).height()/9;
-		$("#unknown").css({
-			"transform": "scale(" + unit/1000 + ", " + unit/1000 + ")",
-			"bottom": unit*4 + "px",
-			"left": unit*5 + (($(window).width() - $(window).height()*16/9)/2) + "px"
 		});
 	} else if (ratio < (16/9)) {
+		offsetX = 0;
+		offsetY = ($(window).height() - $(window).width()*9/16)/2;
 		$("#map").css({
 			"width": $(window).width() + "px", 
 			"height": $(window).width()*9/16 + "px",
-			"top": ($(window).height() - $(window).width()*9/16)/2 + "px",
-			"left": "0px"
+			"top": offsetY + "px",
+			"left": offsetX + "px"
 		});
 		var unit = $(window).width()/16;
-		$("#unknown").css({
-			"transform": "scale(" + unit/1000 + ", " + unit/1000 + ")",
-			"bottom": unit*4 + (($(window).height() - $(window).width()*9/16)/2) + "px",
-			"left": unit*5 + "px"
-		});
 	} else {
+		offsetX = 0;
+		offsetY = 0;
 		$("#map").css({
 			"width": $(window).width() + "px", 
 			"height": $(window).height() + "px",
-			"top": "0px",
-			"left": "0px"
+			"top": offsetY + "px",
+			"left": offsetX + "px"
 		});
 		var unit = $(window).width()/16;
-		$("#unknown").css({
-			"transform": "scale(" + unit/1000 + ", " + unit/1000 + ")",
-			"bottom": unit*4 + "px",
-			"left": unit*5 + "px"
-		});
 	}
 	map.fitBounds([[78.5, 12], [-57.5, 12]]);
 	setTimeout(addKey, 1000);
@@ -762,20 +778,20 @@ function textDate(date) {
 
 function addPoint(point, pane) {
 	var marker;
+	var latLon;
 	if (point.place.geo != undefined) {
-		marker = L.marker([point.place.geo.lat + 1 - (1*Math.random() + 1*Math.random()), point.place.geo.lon + 1 - (1*Math.random() + 1*Math.random())], {icon: mapDot[point.color], opacity: .5, pane: pane});
+		latLon = L.latLng(point.place.geo.lat + 1 - (1*Math.random() + 1*Math.random()), point.place.geo.lon + 1 - (1*Math.random() + 1*Math.random()));
+		marker = L.marker(latLon, {icon: mapDot[point.color], opacity: .5, pane: pane});
 	} else {
-		marker = L.marker([30 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10), -40 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10)], {icon: unknown[point.color], interactive: false, pane: pane});
+		latLon = L.latLng(30 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10), -40 + (20/3*Math.random() + 20/3*Math.random() + 20/3*Math.random() - 10));
+		marker = L.marker(latLon, {icon: unknown[point.color], interactive: false, pane: pane});
+		return marker;
 	}
 	
 	var tooltip = marker.bindTooltip((point.place.name + "<br />" + point.tooltip), {className: "tooltip"});
 	var popup = marker.bindPopup(point.popup, {className: "tooltip", autoPan: false, closeButton: false});
 
-	marker.on("mouseover", map.openTooltip.bind(null, tooltip));
-
-	marker.on("mouseout", map.closeTooltip.bind(null, tooltip));
-
-	marker.on("click", map.openPopup.bind(null, popup));
+	tooltips[map.latLngToContainerPoint(latLon).x + " " + map.latLngToContainerPoint(latLon).y] = [tooltip, popup];
 	
 	marker.addTo(currentMap);
 
