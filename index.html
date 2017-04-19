@@ -662,6 +662,7 @@ function startTimeline() {
 	var point;
 	var caption;
 	var captionOffset = 0;
+	var captionElement;
 	for (var i = 0; i < points.length; i++) {
 		map.createPane(points[i]);
 		$(map.getPane(points[i])).addClass("dayContainer");
@@ -671,7 +672,8 @@ function startTimeline() {
 			point = timeline[points[i]][j];
 			if (caption[point.caption] == undefined) {
 				caption[point.caption] = L.layerGroup().addTo(map);
-				$("<span>" + point.caption + "</span>").appendTo($("#c" + points[i])).hover(layerActive.bind(this, caption[point.caption]), layerInactive.bind(this, caption[point.caption]));
+				captionElement = $("<span>" + point.caption + "</span>").appendTo($("#c" + points[i]))
+				captionElement.hover(layerActive.bind(captionElement, caption[point.caption]), layerInactive.bind(captionElement, caption[point.caption]));
 			}
 			caption[point.caption].addLayer(addPoint(point, points[i]));
 		}
