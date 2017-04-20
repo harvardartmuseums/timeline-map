@@ -400,7 +400,7 @@ function setup() {
 		var element = document.elementFromPoint(x, y);
 
 		var tooltip = tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)];
-		if (tooltip && (/leaflet-([0-9]{4}-[0-9]{2}-[0-9]{2})-pane/.exec($(tooltip[0].getPane()).attr('class'))[1] == textDate(currDate.fullYear())) {
+		if (tooltip && $(tooltip[0].getPane()).hasClass("leaflet-" + textDate(currDate) + "-pane")) {
 			map.closeTooltip();
 			tooltip[0].openTooltip();
 		} else if (currElement == undefined) {
@@ -409,7 +409,7 @@ function setup() {
 			$(element).mouseover();
 
 		} else if (currElement != element) {
-			map.closePopup();
+			map.closeTooltip();
 			$(currElement).mouseout()
 			$(element).mouseover();
 
