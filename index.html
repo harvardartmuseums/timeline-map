@@ -399,8 +399,8 @@ function setup() {
 		var event;
 		var element = document.elementFromPoint(x, y);
 
+		console.log((x - offsetX) + " " + (y - offsetY));
 		if (tooltips[(x - offsetX) + " " + (y - offsetY)] != undefined) {
-			console.log(
 			var tooltip = tooltips[(x - offsetX) + " " + (y - offsetY)];
 			if (tooltip != undefined) {
 				map.closeTooltip();
