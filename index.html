@@ -401,7 +401,7 @@ function setup() {
 		var element = document.elementFromPoint(x, y);
 
 		var tooltip = tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)];
-		if ((tooltip != undefined) && ($(tooltip[0].getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane")) {
+		if ((tooltip != undefined) && ($(tooltip[0].getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane") {
 			map.closeTooltip(currentTooltip);
 			currentTooltip = tooltip[0].getTooltip();
 			tooltip[0].openTooltip();
