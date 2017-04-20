@@ -402,7 +402,7 @@ function setup() {
 		var tooltip = tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)];
 		if (tooltip) {
 			map.closeTooltip();
-			tooltip.openTooltip();
+			map.openTooltip(tooltip[0]);
 		} else if (currElement == undefined) {
 			map.closeTooltip();
 			currElement = element;
@@ -778,10 +778,11 @@ function addPoint(point, pane) {
 	
 	var tooltip = L.tooltip((point.place.name + "<br />" + point.tooltip), {className: "tooltip"});
 	marker.bindTooltip(tooltip);
+	marker.openTooltip();
 	var popup = L.popup(point.popup, {className: "tooltip", autoPan: false, closeButton: false});
 	marker.bindPopup(popup);
 
-	tooltips[map.latLngToContainerPoint(latLon).x + " " + map.latLngToContainerPoint(latLon).y] = marker;
+	tooltips[map.latLngToContainerPoint(latLon).x + " " + map.latLngToContainerPoint(latLon).y] = [tooltip, popup];
 	
 	marker.addTo(currentMap);
 
