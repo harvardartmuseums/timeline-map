@@ -401,11 +401,13 @@ function setup() {
 		var element = document.elementFromPoint(x, y);
 
 		var tooltip = tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)];
-		if ((tooltip != undefined) && $(tooltip[0].getPane()).hasClass("leaflet-" + textDate(currDate) + "-pane")) {
+		if ((tooltip != undefined)) {
 			alert("leaflet-" + textDate(currDate) + "-pane" + "      " + tooltip[0].getPane());
-			map.closeTooltip(currentTooltip);
-			currentTooltip = tooltip[0].getTooltip();
-			tooltip[0].openTooltip();
+			if ($(tooltip[0].getPane()).hasClass("leaflet-" + textDate(currDate) + "-pane")) {
+				map.closeTooltip(currentTooltip);
+				currentTooltip = tooltip[0].getTooltip();
+				tooltip[0].openTooltip();
+			}
 		} else if (currElement == undefined) {
 			map.closeTooltip(currentTooltip);
 			currentTooltip = undefined;
