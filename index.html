@@ -379,6 +379,24 @@ function setup() {
 		zoomSnap: .000001,
 	}).setView([0, 0], 1)
 
+	$(map.getContainer()).mousemove(function(e) {
+		var tooltip = tooltips[(e.clientX - offsetX) + " " + (e.clientY - offsetY)];
+		if (tooltip != undefined) {
+			map.closeTooltip();
+			map.openTooltip(tooltip[0]);
+		} else {
+			map.closeTooltip();
+		}
+	});
+	$(map.getContainer()).click(function(e) {
+		var tooltip = tooltips[(e.clientX - offsetX) + " " + (e.clientY - offsetY)];
+		if (tooltip != undefined) {
+			map.openPopup(tooltip[1]);
+		} else {
+			map.closePopup();
+		}
+	});
+
 	currentMap = L.layerGroup().addTo(map);
 	key = L.layerGroup().addTo(map);
 
