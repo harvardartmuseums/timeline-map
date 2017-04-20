@@ -425,6 +425,8 @@ function setup() {
 			$(element).mouseover();
 
 			currElement = element;
+		} else {
+			$(element).mousemove();
 		}
 	}
 
@@ -790,6 +792,7 @@ function addPoint(point, pane) {
 	var tooltip = marker.bindTooltip((point.place.name + "<br />" + point.tooltip), {className: "tooltip"});
 	var popup = marker.bindPopup(point.popup, {className: "tooltip", autoPan: false, closeButton: false});
 
+	console.log(map.latLngToContainerPoint(latLon).x + " " + map.latLngToContainerPoint(latLon).y);
 	tooltips[map.latLngToContainerPoint(latLon).x + " " + map.latLngToContainerPoint(latLon).y] = [tooltip, popup];
 	
 	marker.addTo(currentMap);
