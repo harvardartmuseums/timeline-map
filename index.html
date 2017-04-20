@@ -776,10 +776,11 @@ function addPoint(point, pane) {
 		return marker;
 	}
 	
-	var tooltip = L.tooltip((point.place.name + "<br />" + point.tooltip), {className: "tooltip"});
+	var tooltip = L.tooltip({className: "tooltip"});
 	marker.bindTooltip(tooltip);
-	marker.openTooltip();
-	var popup = L.popup(point.popup, {className: "tooltip", autoPan: false, closeButton: false});
+	marker.setTooltipContent(point.place.name + "<br />" + point.tooltip);
+	var popup = L.popup({className: "tooltip", autoPan: false, closeButton: false});
+	popup.setContent(point.popup);
 	marker.bindPopup(popup);
 
 	tooltips[map.latLngToContainerPoint(latLon).x + " " + map.latLngToContainerPoint(latLon).y] = [tooltip, popup];
