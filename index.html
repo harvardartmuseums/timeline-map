@@ -375,7 +375,7 @@ function setup() {
 		zoomSnap: .000001,
 	}).setView([0, 0], 1)
 
-	$(map.getContainer()).mousemove(function(e) {
+	$(document).mousemove(function(e) {
 		var tooltip = tooltips[(e.clientX - offsetX) + " " + (e.clientY - offsetY)];
 		if (tooltip != undefined) {
 			map.closeTooltip();
@@ -384,7 +384,7 @@ function setup() {
 			map.closeTooltip();
 		}
 	});
-	$(map.getContainer()).click(function(e) {
+	$(document).click(function(e) {
 		var tooltip = tooltips[(e.clientX - offsetX) + " " + (e.clientY - offsetY)];
 		if (tooltip != undefined) {
 			map.openPopup(tooltip[1]);
