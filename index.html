@@ -312,6 +312,7 @@ var socket = io('/screens-namespace');
 var map;
 var currentMap;
 var key;
+var currentTooltip;
 
 var tooltips = {};
 
@@ -400,16 +401,19 @@ function setup() {
 		var element = document.elementFromPoint(x, y);
 
 		var tooltip = tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)];
-		if (tooltip && $(tooltip[0].getPane()).hasClass("leaflet-" + textDate(currDate) + "-pane")) {
-			map.closeTooltip();
+		if ((tooltip != undefined) && $(tooltip[0].getPane()).hasClass("leaflet-" + textDate(currDate) + "-pane")) {
+			map.closeTooltip(currentTooltip);
+			currentTooltip = tooltip[0].getTooltip();
 			tooltip[0].openTooltip();
 		} else if (currElement == undefined) {
-			map.closeTooltip();
+			map.closeTooltip(currentTooltip);
+			currentTooltip = undefined;
 			currElement = element;
 			$(element).mouseover();
 
 		} else if (currElement != element) {
-			map.closeTooltip();
+			map.closeTooltip(currentTooltip);
+			currentTooltip = undefined;
 			$(currElement).mouseout()
 			$(element).mouseover();
 
