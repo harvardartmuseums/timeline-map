@@ -399,19 +399,17 @@ function setup() {
 		var event;
 		var element = document.elementFromPoint(x, y);
 
-		if (tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)] != undefined) {
-			var tooltip = tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)];
-			if (tooltip != undefined) {
-				map.closeTooltip();
-				map.openTooltip(tooltip[0]);
-			} else {
-				map.closeTooltip();
-			}
+		var tooltip = tooltips[Math.round(x - offsetX) + " " + Math.round(y - offsetY)];
+		if (tooltip) {
+			map.closePopup();
+			map.openPopup(tooltip[1]);
 		} else if (currElement == undefined) {
+			map.closePopup();
 			currElement = element;
 			$(element).mouseover();
 
 		} else if (currElement != element) {
+			map.closePopup();
 			$(currElement).mouseout()
 			$(element).mouseover();
 
