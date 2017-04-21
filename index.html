@@ -400,7 +400,7 @@ function setup() {
 		var event;
 		var element = document.elementFromPoint(x, y);
 
-		var tooltip = tooltips[Math.round(x - offsetX)/3 + " " + Math.round(y - offsetY)/3];
+		var tooltip = tooltips[Math.round(x - offsetX)/5 + " " + Math.round(y - offsetY)/5];
 		if ((tooltip != undefined) && ($(tooltip[0].getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane"))) {
 			map.closeTooltip(currentTooltip);
 			currentTooltip = tooltip[0].getTooltip();
@@ -789,7 +789,7 @@ function addPoint(point, pane) {
 	popup.setContent(point.popup);
 	marker.bindPopup(popup);
 
-	tooltips[map.latLngToContainerPoint(latLon).x/3 + " " + map.latLngToContainerPoint(latLon).y/3] = [marker, popup];
+	tooltips[map.latLngToContainerPoint(latLon).x/5 + " " + map.latLngToContainerPoint(latLon).y/5] = [marker, popup];
 	
 	marker.addTo(currentMap);
 
