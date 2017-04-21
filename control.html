@@ -24,18 +24,45 @@ body, html {
 <script>
 "use strict";
 
+var xStart = 0;
+var yStart = 0;
+var xCurr = 0;
+var yCurr = 0;
+var timedOut = false;
 var socket = io('/control-namespace');
 
 document.addEventListener("touchmove", function(e) {
+<<<<<<< HEAD
 	var x = e.touches[0].pageX/$(window).width()*110 - 5;
 	var y = e.touches[0].pageY/$(window).height()*110 - 5;
+=======
+	xCurr = e.touches[0].pageX;
+	yCurr = e.touches[0].pageY;
+
+	var x = xCurr/$(window).width()*110 - 5;
+	var y = yCurr/$(window).height()*110 - 5;
+>>>>>>> parent of 3a24207... adjusted tap simulation
 
 	socket.emit("cursor", x, y);
 }, false);
 
-document.addEventListener("click", function() {
-	socket.emit("click");
+document.addEventListener("touchstart", function(e) {
+	xCurr = xStart = e.touches[0].pageX;
+	yCurr = yStart = e.touches[0].pageY;
+
+	timedOut = false;
+	setTimeout(timeOut, 500);
 });
+
+document.addEventListener("touchend", function(e) {
+	if (!timedOut && (Math.abs(xStart - xCurr) < 5) && (Math.abs(yStart - yCurr) < 5)) {
+		socket.emit("click");
+	}
+});
+
+function timeOut() {
+	timedOut = true;
+}
 
 </script>
 </body>
