@@ -772,6 +772,9 @@ function refreshData() {
 	$(".show").removeClass("show");
 	map.closePopup();
 
+	map.closeTooltip(currentTooltip);
+	currentTooltip = undefined;
+
 	$("#date").html(dFull[currDate.getDay()] + ", " + mFull[currDate.getMonth()] + " " + currDate.getDate() + ", " + currDate.getFullYear());
 
 	$(map.getPane(textDate(currDate))).addClass("show");
