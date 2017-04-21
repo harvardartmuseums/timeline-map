@@ -435,7 +435,7 @@ function setup() {
 		var tooltip = tooltips[Math.round((x - offsetX)/5) + " " + Math.round((y - offsetY)/5)];
 		if ((tooltip != undefined) && ($(tooltip.getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane"))) {
 			map.closePopup();
-			map.openPopup(tooltip.getPopup());
+			tooltip.openPopup();
 		} else {
 			map.closePopup();
 			$(currElement).click();
