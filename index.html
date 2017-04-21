@@ -409,10 +409,10 @@ function setup() {
 		var element = document.elementFromPoint(x, y);
 
 		var tooltip = tooltips[Math.round((x - offsetX)/5) + " " + Math.round((y - offsetY)/5)];
-		if ((tooltip != undefined) && ($(tooltip[0].getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane"))) {
+		if ((tooltip != undefined) && ($(tooltip.getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane"))) {
 			map.closeTooltip(currentTooltip);
-			currentTooltip = tooltip[0].getTooltip();
-			tooltip[0].openTooltip();
+			currentTooltip = tooltip.getTooltip();
+			tooltip.openTooltip();
 		} else if (currElement == undefined) {
 			map.closeTooltip(currentTooltip);
 			currentTooltip = undefined;
@@ -433,9 +433,9 @@ function setup() {
 
 	function triggerMouseClick(x, y) {
 		var tooltip = tooltips[Math.round((x - offsetX)/5) + " " + Math.round((y - offsetY)/5)];
-		if ((tooltip != undefined) && ($(tooltip[0].getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane"))) {
+		if ((tooltip != undefined) && ($(tooltip.getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane"))) {
 			map.closePopup();
-			map.openPopup(tooltip[1]);
+			map.openPopup(tooltip.getPopup());
 		} else {
 			map.closePopup();
 			$(currElement).click();
@@ -811,7 +811,7 @@ function addPoint(point, pane) {
 	popup.setContent(point.popup);
 	marker.bindPopup(popup);
 
-	tooltips[Math.round(map.latLngToContainerPoint(latLon).x/5) + " " + Math.round(map.latLngToContainerPoint(latLon).y/5)] = [marker, popup];
+	tooltips[Math.round(map.latLngToContainerPoint(latLon).x/5) + " " + Math.round(map.latLngToContainerPoint(latLon).y/5)] = marker;
 	
 	marker.addTo(currentMap);
 
