@@ -395,7 +395,7 @@ function setup() {
 	setInterval(getNewData, 24*60*60*1000);
 
 	$("#timeline").mousemove(function(e) {
-		document.getElementById("timeline").value = Math.round((e.pageX/$(window).width()) * ((endDate.valueOf()/(24*60*60*1000) - startDate.valueOf()/(24*60*60*1000)) - startDate.valueOf()/(24*60*60*1000));
+		document.getElementById("timeline").value = Math.round((e.pageX/$(window).width()) * ((endDate.valueOf()/(24*60*60*1000) - startDate.valueOf()/(24*60*60*1000)) - startDate.valueOf()/(24*60*60*1000)));
 		setDate();
 
 		pauseData();
