@@ -43,7 +43,7 @@ body, html {
 	font-family: Dosis;
 }
 
-.tooltip image {
+.tooltip img, .leaflet-popup-content img {
 	max-width: 100%;
 	max-height: 30vh;
 	height: auto;
@@ -393,6 +393,13 @@ function setup() {
 	getNewData();
 
 	setInterval(getNewData, 24*60*60*1000);
+
+	$("#timeline").mousemove(function(e) {
+		document.getElementById("timeline").value = Math.round((e.pageX/$(window).width()) * ((endDate.valueOf()/(24*60*60*1000) - startDate.valueOf()/(24*60*60*1000)) - startDate.valueOf()/(24*60*60*1000));
+		setDate();
+
+		pauseData();
+	}
 
 	var currElement;
 	socket.on('cursor', function(x, y) {
