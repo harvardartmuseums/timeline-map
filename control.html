@@ -32,16 +32,13 @@ var timedOut = false;
 var socket = io('/control-namespace');
 
 document.addEventListener("touchmove", function(e) {
-<<<<<<< HEAD
-	var x = e.touches[0].pageX/$(window).width()*110 - 5;
-	var y = e.touches[0].pageY/$(window).height()*110 - 5;
-=======
+	e.preventDefault();
+
 	xCurr = e.touches[0].pageX;
 	yCurr = e.touches[0].pageY;
 
 	var x = xCurr/$(window).width()*110 - 5;
 	var y = yCurr/$(window).height()*110 - 5;
->>>>>>> parent of 3a24207... adjusted tap simulation
 
 	socket.emit("cursor", x, y);
 }, false);
