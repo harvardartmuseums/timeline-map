@@ -435,6 +435,8 @@ function setup() {
 			currElement = element;
 		} else {
 			map.closeTooltip(currentTooltip);
+
+			$(currElement).mousemove();
 		}
 	}
 
