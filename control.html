@@ -42,16 +42,21 @@ document.addEventListener("touchstart", function(e) {
 	xStart = e.touches[0].pageX;
 	yStart = e.touches[0].pageY;
 
+	timedOut = false;
 	setTimeout(timeOut, 500);
+	alert("down!");
 });
 
 document.addEventListener("touchend", function(e) {
 	if (!timedOut && (Math.abs(xStart - e.touches[0].pageX) < 5) && (Math.abs(yStart - e.touches[0].pageY) < 5)) {
 		socket.emit("click");
+		alert("click!");
 	}
+	alert("up!");
 });
 
 function timeOut() {
+	alert("too late!");
 	timedOut = true;
 }
 
