@@ -26,36 +26,36 @@ body, html {
 
 var xStart = 0;
 var yStart = 0;
+var xCurr = 0;
+var yCurr = 0;
 var timedOut = false;
 var socket = io('/control-namespace');
 
 document.addEventListener("touchmove", function(e) {
-	//e.preventDefault();
+	xCurr = e.touches[0].pageX;
+	yCurr = e.touches[0].pageY;
 
-	var x = e.touches[0].pageX/$(window).width()*110 - 5;
-	var y = e.touches[0].pageY/$(window).height()*110 - 5;
+	var x = xCurr/$(window).width()*110 - 5;
+	var y = yCurr/$(window).height()*110 - 5;
 
 	socket.emit("cursor", x, y);
 }, false);
 
 document.addEventListener("touchstart", function(e) {
-	xStart = e.touches[0].pageX;
-	yStart = e.touches[0].pageY;
+	xCurr = xStart = e.touches[0].pageX;
+	yCurr = yStart = e.touches[0].pageY;
 
 	timedOut = false;
 	setTimeout(timeOut, 500);
 });
 
 document.addEventListener("touchend", function(e) {
-	if (!timedOut && (Math.abs(xStart - e.touches[0].pageX) < 5) && (Math.abs(yStart - e.touches[0].pageY) < 5)) {
+	if (!timedOut && (Math.abs(xStart - xCurr) < 5) && (Math.abs(yStart - yCurr) < 5)) {
 		socket.emit("click");
-		alert("click!");
 	}
-	alert("up!");
 });
 
 function timeOut() {
-	alert("too late!");
 	timedOut = true;
 }
 
