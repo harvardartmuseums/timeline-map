@@ -397,8 +397,9 @@ function setup() {
 		triggerMouseMove(x*$(window).width()/100, y*$(window).height()/100);
 	});
 	socket.on('click', function() {
-		var x = /translate\(([^v]*)vw, ([^v]*)vh\)/.execute($("#cursor").css("transform"))[1];
-		var y = /translate\(([^v]*)vw, ([^v]*)vh\)/.execute($("#cursor").css("transform"))[2];
+		var regex = /translate\(([^v]*)vw, ([^v]*)vh\)/;
+		var x = regex.exec($("#cursor").css("transform"))[1];
+		var y = regex.exec($("#cursor").css("transform"))[2];
 		triggerMouseClick(x*$(window).width()/100, y*$(window).height()/100);
 	});
 	function triggerMouseMove(x, y) {
