@@ -30,7 +30,7 @@ var timedOut = false;
 var socket = io('/control-namespace');
 
 document.addEventListener("touchmove", function(e) {
-	e.preventDefault();
+	//e.preventDefault();
 
 	var x = e.touches[0].pageX/$(window).width()*110 - 5;
 	var y = e.touches[0].pageY/$(window).height()*110 - 5;
