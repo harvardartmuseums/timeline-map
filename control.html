@@ -38,23 +38,11 @@ document.addEventListener("touchmove", function(e) {
 
 	socket.emit("cursor", x, y);
 }, false);
-/*
-socket.on('reject', function () {
-	alert("Another controller is already in use.");
-	$(document).off("unload");
-	$(document).off("touchmove");
-});
 
-socket.on('timeout', function () {
-	alert("This controller has taken too long in responding. Please reload the page to reconnect.");
-	$(document).off("unload");
-	$(document).off("touchmove");
-});
 
-socket.on('ping', function() {
-	socket.emit("confirm");
+$(document).on("tap", function(e) {
+	socket.emit("click");
 });
-*/
 
 </script>
 </body>

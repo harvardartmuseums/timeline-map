@@ -27,35 +27,11 @@ var controlIO = io.of('/control-namespace');
 var control = null;
 var confirmed = false;
 
-//setInterval(pingControl, 5*60*1000);
-
 controlIO.on('connection', function(socket) {
-	/*if (control != null) {
-		controlIO.to(socket.id).emit("reject");
-	} else {
-		confirmed = true;
-		control = socket.id;*/
-		socket.on('cursor', function(x, y) {
-			screensIO.emit('cursor', x, y);
-		});/*
-		socket.on('confirm', function() {
-			confirmed = true;
-		});
-		socket.on('close', function() {
-			control = null;
-		});
-	}*/
+	socket.on('cursor', function(x, y) {
+		screensIO.emit('cursor', x, y);
+	});
+	socket.on('click', function() {
+		screensIO.emit('click');
+	});
 });
-/*
-function pingControl() {
-	if (control != null) {
-		if (confirmed) {
-			confirmed = false;
-			controlIO.to(control).emit("ping");
-		} else {
-			controlIO.to(control).emit("timeout");
-			control = null;
-		}
-	}
-}
-*/

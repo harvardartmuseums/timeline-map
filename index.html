@@ -394,10 +394,14 @@ function setup() {
 	var currElement;
 	socket.on('cursor', function(x, y) {
 		$("#cursor").css("transform", "translate(" + x + "vw, " + y + "vh)");
-		triggerMouseEvents(x*$(window).width()/100, y*$(window).height()/100);
+		triggerMouseMove(x*$(window).width()/100, y*$(window).height()/100);
 	});
-	function triggerMouseEvents(x, y) {
-		var event;
+	socket.on('click', function() {
+		var x = /translate\(([^v]*)vw, ([^v]*)vh\)/.execute($("#cursor").css("transform"))[1];
+		var y = /translate\(([^v]*)vw, ([^v]*)vh\)/.execute($("#cursor").css("transform"))[2];
+		triggerMouseClick(x*$(window).width()/100, y*$(window).height()/100);
+	});
+	function triggerMouseMove(x, y) {
 		var element = document.elementFromPoint(x, y);
 
 		var tooltip = tooltips[Math.round((x - offsetX)/5) + " " + Math.round((y - offsetY)/5)];
@@ -414,12 +418,23 @@ function setup() {
 		} else if (currElement != element) {
 			map.closeTooltip(currentTooltip);
 			currentTooltip = undefined;
-			$(currElement).mouseout()
+			$(currElement).mouseout();
 			$(element).mouseover();
 
 			currElement = element;
 		} else {
 			map.closeTooltip(currentTooltip);
+		}
+	}
+
+	function triggerMouseClick(x, y) {
+		var tooltip = tooltips[Math.round((x - offsetX)/5) + " " + Math.round((y - offsetY)/5)];
+		if ((tooltip != undefined) && ($(tooltip[0].getPane()).hasClass("leaflet-" + currDate.getFullYear() + "-" + (currDate.getMonth() + 1) + "-" + (currDate.getDate() - 1) + "-pane"))) {
+			map.closePopup();
+			map.openPopup(tooltip[1]);
+		} else {
+			map.closePopup();
+			$(currElement).click();
 		}
 	}
 
@@ -575,7 +590,7 @@ function setData(data, start) {
 		timeline[data.records[i].gallery.begindate].push({
 			id: data.records[i].id, 
 			caption: data.records[i].gallery.name, 
-			tooltip: text("<em>" + data.records[i].title, true) + "</em><br />Click for more information",
+			tooltip: text("<em>" + data.records[i].title, true) + "</em><br />Tap for more information",
 			popup: (image(data.records[i].primaryimageurl) + "<br /><em>" + text(data.records[i].title, true) + "</em><br />" + text(getArtist(data.records[i])) + text(data.records[i].dated) + text(data.records[i].culture, true) + "<br />" + text(data.records[i].gallery.theme, true)).trim(),
 			date: data.records[i].gallery.begindate,
 			color: getColor(data.records[i].classification),
