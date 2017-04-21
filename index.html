@@ -314,6 +314,9 @@ var currentMap;
 var key;
 var currentTooltip;
 
+var cursorX = 0;
+var cursorY = 0;
+
 var tooltips = {};
 
 var m = ["Jan", "Feb", "Mar", "Apr", "May", "June", 
@@ -397,12 +400,12 @@ function setup() {
 		triggerMouseMove(x*$(window).width()/100, y*$(window).height()/100);
 	});
 	socket.on('click', function() {
-		var regex = /translate\(([^v]*)vw, ([^v]*)vh\)/;
-		var x = regex.exec($("#cursor").css("transform"))[1];
-		var y = regex.exec($("#cursor").css("transform"))[2];
-		triggerMouseClick(x*$(window).width()/100, y*$(window).height()/100);
+		triggerMouseClick(cursorX, cursorY);
 	});
 	function triggerMouseMove(x, y) {
+		cursorX = x;
+		cursorY = y;
+
 		var element = document.elementFromPoint(x, y);
 
 		var tooltip = tooltips[Math.round((x - offsetX)/5) + " " + Math.round((y - offsetY)/5)];
