@@ -40,6 +40,19 @@ document.addEventListener("touchmove", function(e) {
 	var x = xCurr/$(window).width()*110 - 5;
 	var y = yCurr/$(window).height()*110 - 5;
 
+	if (x < 0) {
+		x = 0;
+	}
+	if (x > 100) {
+		x = 100;
+	}
+	if (y < 0) {
+		y = 0;
+	}
+	if (y > 100) {
+		y = 100;
+	}
+
 	socket.emit("cursor", x, y);
 }, false);
 
