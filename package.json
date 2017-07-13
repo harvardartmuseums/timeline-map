@@ -4,11 +4,11 @@
   "description": "A map of objects as they enter the collection",
   "main": "index.js",
   "engines": {
-    "node": "7.2.0"
+    "node": "7.10.1"
   },
   "dependencies": {
-    "express": "^4.14.0",
-    "socket.io": "^1.5.1"
+    "express": "4.14.0",
+    "socket.io": "1.5.1"
   },
   "devDependencies": {},
   "scripts": {
