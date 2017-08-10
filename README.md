@@ -14,7 +14,7 @@ http://timeline-map.herokuapp.com/control.html
 ## Requirements
 
 * NodeJS
-* Harvard Art Museums API Key (get one [here]http://www.harvardartmuseums.org/collections/api)
+* Harvard Art Museums API Key (get one here[http://www.harvardartmuseums.org/collections/api])
 
 ### Installation
 ```
