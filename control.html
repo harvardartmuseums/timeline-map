@@ -78,6 +78,8 @@ document.addEventListener("touchmove", function(e) {
 }, false);
 
 document.addEventListener("touchstart", function(e) {
+	document.getElementById("instructions").style.opacity = 0;
+	
 	xCurr = xStart = e.touches[0].pageX;
 	yCurr = yStart = e.touches[0].pageY;
 
@@ -86,6 +88,8 @@ document.addEventListener("touchstart", function(e) {
 });
 
 document.addEventListener("touchend", function(e) {
+	document.getElementById("instructions").style.opacity = .5;
+	
 	if (!timedOut && (Math.abs(xStart - xCurr) < 5) && (Math.abs(yStart - yCurr) < 5)) {
 		socket.emit("click");
 	}
