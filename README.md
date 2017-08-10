@@ -25,7 +25,7 @@ npm install
 npm start
 ```
 
-### Possible to-dos
+## Possible to-dos
 
 * Add a map (exactly like that on the screens) to the control so the mapping of the trackpad is obvious
 * Make the target area the cursor effects on the screens larger
