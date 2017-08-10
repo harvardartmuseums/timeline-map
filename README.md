@@ -5,19 +5,6 @@ Getting its data from the Harvard Art Museums API, this project places all of th
 
 
 
-
-Note that the framework, which uses d3 to display zoomable nodes controllable on an iPad, can be repurposed by changing the url in index.js to point to a new data.json file. The format for the JSON is 
-
-
-
-{"title": "", "type": "", "content": "", "caption": "", "nodes": []}
-
-
-
-where type is "image", "text", "audio", or "video", content is, respectively, the URL of an image, text, a list [] with the URL of an audio file and then the URL of an image, or the URL of a video, and nodes holds any children nodes, which follow the same format.
-
-
-
 The project can be viewed at:
 
 http://timeline-map.herokuapp.com/index.html
